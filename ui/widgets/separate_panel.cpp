@@ -227,9 +227,6 @@ void SeparatePanel::overrideTitleColor(std::optional<QColor> color) {
 		return;
 	}
 	_titleOverrideColor = color;
-	_titleOverrideBorderParts = _titleOverrideColor
-		? createBorderImage(*_titleOverrideColor)
-		: QPixmap();
 	_titleOverridePalette = color
 		? MakeAdjustedPalette(*color)
 		: nullptr;
@@ -551,13 +548,7 @@ bool SeparatePanel::eventHook(QEvent *e) {
 }
 
 void SeparatePanel::initLayout(const SeparatePanelArgs &args) {
-	setWindowFlags(Qt::WindowFlags(Qt::FramelessWindowHint)
-		| Qt::WindowStaysOnTopHint
-		| Qt::NoDropShadowWindowHint
-		| Qt::Dialog);
 	setAttribute(Qt::WA_MacAlwaysShowToolWindow);
-	setAttribute(Qt::WA_NoSystemBackground, true);
-	setAttribute(Qt::WA_TranslucentBackground, true);
 
 	validateBorderImage();
 	style::PaletteChanged(
@@ -572,7 +563,6 @@ void SeparatePanel::initLayout(const SeparatePanelArgs &args) {
 }
 
 void SeparatePanel::validateBorderImage() {
-	_borderParts = createBorderImage(st::windowBg->c);
 }
 
 QPixmap SeparatePanel::createBorderImage(QColor color) const {
@@ -847,12 +837,12 @@ void SeparatePanel::initGeometry(QSize size) {
 		return initRect.translated(center - initRect.center()).marginsAdded(_padding);
 	}();
 	move(rect.topLeft());
-	setFixedSize(rect.size());
+	setMinimumSize(rect.size());
 	updateControlsGeometry();
 }
 
 void SeparatePanel::updateGeometry(QSize size) {
-	setFixedSize(
+	setMinimumSize(
 		_padding.left() + size.width() + _padding.right(),
 		_padding.top() + size.height() + _padding.bottom());
 	updateControlsGeometry();
@@ -897,12 +887,6 @@ void SeparatePanel::paintEvent(QPaintEvent *e) {
 				QRect(QPoint(0, 0), _animationCache.size()));
 			return;
 		}
-	}
-
-	if (_useTransparency) {
-		paintShadowBorder(p);
-	} else {
-		paintOpaqueBorder(p);
 	}
 }
 
