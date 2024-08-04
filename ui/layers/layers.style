@@ -32,8 +32,8 @@ Box {
 	shadowIgnoreTopSkip: bool;
 }
 
-boxDuration: 200;
-boxRadius: 8px;
+boxDuration: 170;
+boxRadius: 6px;
 
 boxButtonFont: font(boxFontSize semibold);
 defaultBoxButton: RoundButton(defaultLightButton) {
